@@ -44,7 +44,7 @@ udemy_download --auth-code
 
 #### ✉️ Login via E-mail e Senha
 ```bash
-udemy_download --auth
+udemy_download --auth-credentials 
 ```
 1. Forneça seu e-mail e senha cadastrados na Udemy.  
 2. Após a autenticação, sua sessão será ativa.
