@@ -8,7 +8,7 @@
   <p align="center">
     <img src="https://img.shields.io/badge/Version-1.0.0-orange?style=flat-square" alt="Version">
     <img src="https://img.shields.io/badge/Status-Active-success?style=flat-square" alt="Status">
-    <a href="https://raw.githubusercontent.com/PauloCesar-dev404/Udemy-Download/refs/heads/main/versions/versions/win-amd64-SETUP.exe" target="_blank">
+    <a href="https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/win-amd64-SETUP.exe" target="_blank">
       <img src="https://img.shields.io/badge/Download-latest-blue?style=flat-square" alt="Download">
     </a>
   </p>
