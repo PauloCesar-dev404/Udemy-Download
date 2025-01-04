@@ -19,9 +19,11 @@
 >⚠️ **Atenção**  
 Não pratique pirataria. Compartilhar cursos baixados é contra os termos de uso da plataforma e é considerado ilegal. Este aplicativo é apenas uma ferramenta destinada a salvar dados adquiridos oficialmente pelo usuário. Todas as ações realizadas com esta ferramenta são de total responsabilidade do usuário.
 
+## Requisitos 
 
-
-
+- sistema operacional Windows 10 ou superior
+- Arquitetura: AMD64
+---
 ## 🚀 Como Usar
 
 Digite o comando `--help` para ver os comandos disponíveis:
