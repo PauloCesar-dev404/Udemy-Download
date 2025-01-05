@@ -24,6 +24,15 @@ Não pratique pirataria. Compartilhar cursos baixados é contra os termos de uso
 - sistema operacional Windows 10 ou superior
 - Arquitetura: AMD64
 ---
+## instalação
+
+Baixe em [Download](https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/win-amd64-SETUP.exe)
+
+Execute o instalador,(clique em instalar obviamente...) aguarde a instalação concluir.
+Agora é só abrir um novo terminal e chamar o programa!
+
+<br>
+
 ## 🚀 Como Usar
 
 Digite o comando `--help` para ver os comandos disponíveis:
