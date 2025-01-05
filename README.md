@@ -74,6 +74,12 @@ udemy_download --my-section
 
 Cada curso possui um **identificador único**. Copie o ID do curso desejado, cole no terminal e aguarde o download das aulas. Fique atento ao terminal para acompanhar o progresso e eventuais erros.
 
+
+
+### Local de Salvamento dos Seus Cursos
+
+São salvos no seguinte diretório em seu computador: **C:\Users\SEU-USUARIO\Udemy\Meus Cursos**
+
 ---
 
 ## ❤️ Apoie o Projeto
