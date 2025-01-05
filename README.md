@@ -84,6 +84,5 @@ São salvos no seguinte diretório em seu computador: **C:\Users\SEU-USUARIO\Ude
 
 ## ❤️ Apoie o Projeto
 
-Se você gostou deste projeto e deseja apoiar, considere uma doação via Pix:  
-📧 ```paulocesar0073dev404@gmail.com ```
+Se você gostou deste projeto e deseja [apoiar](https://paulocesar-dev404.github.io/apoi-online/)
 
