@@ -43,7 +43,7 @@ udemy_download --help
 
 ### 🔑 Login
 
-Após o download, você deve iniciar uma sessão. Existem **duas maneiras de login**: por código OTP (One Time Password) ou por e-mail e senha.
+Após o download e instalação concluída, você deve iniciar uma sessão. Existem **duas maneiras de login**: por código OTP (One Time Password) ou por e-mail e senha.
 
 #### 🔐 Login via OTP
 ```bash
