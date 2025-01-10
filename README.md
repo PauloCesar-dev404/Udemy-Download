@@ -43,7 +43,7 @@ udemy_download --help
 
 ### 🔑 Login
 
-Após o download, você deve iniciar uma sessão. Existem **duas maneiras de login**: por código OTP (One Time Password) ou por e-mail e senha.
+Após o download e instalação concluída, você deve iniciar uma sessão. Existem **duas maneiras de login**: por código OTP (One Time Password) ou por e-mail e senha.
 
 #### 🔐 Login via OTP
 ```bash
@@ -84,5 +84,5 @@ São salvos no seguinte diretório em seu computador: **C:\Users\SEU-USUARIO\Ude
 
 ## ❤️ Apoie o Projeto
 
-Se você gostou deste projeto e deseja [apoiar](https://paulocesar-dev404.github.io/apoi-online/)
+Se você gostou deste projeto e deseja [apoiar](https://paulocesar-dev404.github.io/me-apoiando-online/)
 
