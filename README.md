@@ -11,6 +11,9 @@
     <a href="https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/win-amd64-SETUP.exe" target="_blank">
       <img src="https://img.shields.io/badge/Download-latest-blue?style=flat-square" alt="Download">
     </a>
+    <a href="https://t.me/udemy_downloadx" target="_blank">
+      <img src="https://img.shields.io/badge/Telegram-Join%20Us-blue.svg?logo=telegram" alt="Telegram">
+    </a>
   </p>
 </div>
 
