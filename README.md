@@ -32,7 +32,7 @@ Não pratique pirataria. Compartilhar cursos baixados é contra os termos de uso
 Baixe em [Download](https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/win-amd64-SETUP.exe)
 
 Execute o instalador,(clique em instalar obviamente...) aguarde a instalação concluir.
-Agora é só abrir um novo terminal e chamar o programa!
+Agora é só abrir um novo terminal e chamar o programa! ,pois o mesmo está no path do sistema
 
 <br>
 
@@ -83,6 +83,8 @@ Cada curso possui um **identificador único**. Copie o ID do curso desejado, col
 
 São salvos no seguinte diretório em seu computador: **C:\Users\SEU-USUARIO\Udemy\Meus Cursos**
 
+### ERR
+- Se o app não abre ao digitar comandos....abra uma nova guia no PowerShell e tente novamente,caso persista abra uma issue especificações: `versão do sistema`,`qual terminal está usando`,`comando utilizado`
 ---
 
 ## ❤️ Apoie o Projeto
