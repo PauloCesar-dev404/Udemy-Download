@@ -4,7 +4,7 @@ from utils_ import version
 setup(
     name='Udemy Downlod',
     version=version,
-    description='Salvando seus cursos localmente você assiste quando bem desejar!',
+    description='udemy_download',
     executables=[Executable(
         script=r'./udemy_download.py',
         base=None,

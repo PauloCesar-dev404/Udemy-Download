@@ -204,9 +204,11 @@ class UdemyDownloader:
                     # Coleta de informações da aula
                     lecture_id = aule.get('lecture_id')
                     section_lecture = sanitize_filename(aule.get('section'))
+                    if section_lecture == 'CourseFiles':
+                        section_lecture = 'Conteúdos'
                     title = f"{index}.{sanitize_filename(aule.get('title'))}"
                     lecture_title_origin = aule.get('title')
-                    section_order = aule.get('section_order')
+                    section_order = aule.get('section_order',None)
                     # Criar diretórios de saída
                     output_save_dir = create_directory(
                         base_dir=self._cache_saved_courses,
@@ -227,7 +229,6 @@ class UdemyDownloader:
                             is_drm=is_drm,
                             title=title,
                             section_lecture=section_lecture,
-                            section_order=section_order,
                             files_course=files_course,
                             details_lecture=details_lecture,
                             output_save_dir_files=output_save_dir_files,
@@ -240,7 +241,6 @@ class UdemyDownloader:
                         banner(
                             title=title,
                             section_lecture=section_lecture,
-                            section_order=section_order,
                             tyype='Artigo',
                             lecture_id=lecture_id,
                             captions=''
@@ -277,7 +277,6 @@ class UdemyDownloader:
                         banner(
                             title=title,
                             section_lecture=section_lecture,
-                            section_order=section_order,
                             tyype='Quiz',
                             lecture_id=lecture_id,
                             captions=''
@@ -334,7 +333,6 @@ class UdemyDownloader:
                        streams_data,
                        is_drm,
                        title,
-                       section_order,
                        section_lecture,
                        files_course,
                        output_save_dir,
@@ -352,7 +350,6 @@ class UdemyDownloader:
             if DEBUG_DEV:
                 print("m3u8-FILE!!")
             banner(title=title,
-                   section_order=section_order,
                    section_lecture=section_lecture,
                    lecture_id=lecture_id,
                    captions=parser_captions(details_lecture.get_captions.languages()))
@@ -393,7 +390,6 @@ class UdemyDownloader:
             if DEBUG_DEV:
                 print("DASH-FILE!!")
             banner(title=title,
-                   section_order=section_order,
                    section_lecture=section_lecture,
                    captions=parser_captions(details_lecture.get_captions.languages()),
                    lecture_id=lecture_id)
@@ -443,7 +439,6 @@ class UdemyDownloader:
             if DEBUG_DEV:
                 print("MP4-FILE!!")
             banner(title=title,
-                   section_order=section_order,
                    section_lecture=section_lecture,
                    lecture_id=lecture_id,
                    captions=parser_captions(details_lecture.get_captions.languages()))

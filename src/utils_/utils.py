@@ -137,7 +137,7 @@ def organize_streams(streams):
     return organized_streams
 
 
-def banner(title, section_order, section_lecture,lecture_id,captions, tyype: str = 'Video'):
+def banner(title, section_lecture,lecture_id,captions, tyype: str = 'Video'):
     size = 0
     if len(title) > len(section_lecture):
         size = len(title)
@@ -146,7 +146,7 @@ def banner(title, section_order, section_lecture,lecture_id,captions, tyype: str
     line = (size + 8) * '_'
     print(line,
           f'\n{Fore.LIGHTBLUE_EX}AULA{Style.RESET_ALL}: {Fore.LIGHTWHITE_EX}{title}{Style.RESET_ALL}\n'
-          f'{Fore.LIGHTBLUE_EX}SEÇÃO{Style.RESET_ALL}: {Fore.LIGHTWHITE_EX}{section_order}.{section_lecture}'
+          f'{Fore.LIGHTBLUE_EX}SEÇÃO{Style.RESET_ALL}: {Fore.LIGHTWHITE_EX}{section_lecture}'
           f'{Style.RESET_ALL}\n'
           f'{Fore.LIGHTBLUE_EX}TIPO{Style.RESET_ALL}: {Fore.LIGHTWHITE_EX}{tyype}{Style.RESET_ALL}\n'
           f'{Fore.LIGHTBLUE_EX}LEGENDAS{Style.RESET_ALL}: [ {Fore.LIGHTWHITE_EX}{captions}{Style.RESET_ALL} ]\n'
@@ -159,8 +159,11 @@ def create_directory(base_dir, section_order, section_name):
     Cria um diretório organizado com base no número da seção e nome da seção.
     """
     sanitized_section_name = sanitize_filename(section_name)
-    dir_path = os.path.join(base_dir, f'Seção {section_order} {sanitized_section_name.rstrip()}')
+    section_order = f'Seção {section_order} {sanitized_section_name}' if section_order and section_order != 'None' else 'Conteúdos'
+
+    dir_path = os.path.join(base_dir, f'{section_order}')
     os.makedirs(dir_path, exist_ok=True)
+
     return dir_path
 
 

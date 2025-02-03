@@ -7,7 +7,7 @@
   O Udemy Download é uma ferramenta de código aberto que permite aos usuários salvar cursos adquiridos na plataforma Udemy para acesso offline. Este aplicativo utiliza métodos semelhantes aos dos navegadores para obter e salvar conteúdos de cursos, garantindo que apenas os cursos adquiridos oficialmente sejam baixados.</p>
 
   <p align="center">
-    <img src="https://img.shields.io/badge/Version-1.0.0.6-orange?style=flat-square" alt="Version">
+    <img src="https://img.shields.io/badge/Version-1.0.0.7-orange?style=flat-square" alt="Version">
     <img src="https://img.shields.io/badge/Status-Active-success?style=flat-square" alt="Status">
     <a href="https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/win-amd64-SETUP.exe" target="_blank">
       <img src="https://img.shields.io/badge/Download-latest-blue?style=flat-square" alt="Download">
@@ -85,7 +85,7 @@ Os cursos serão salvos no seguinte diretório em seu computador: **C:\Users\SEU
 ---
 ### Integridade
 
-SHA256: `B40FA0F4D11FABA3F403B710342F272BD59D90F915B5EA13E57BCC6D6DAD034E`
+SHA256: ` 03BB840C362450F001A6AC461901481BE9B253AEE742BCDD3BD7687DF35069AF`
 
 versão: 1.0.0.7
 ---
