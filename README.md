@@ -4,7 +4,7 @@
     Udemy Download
   </h1>
   <p align="center">
-  O Udemy Download é uma ferramenta de código aberto que permite aos usuários salvar cursos adquiridos na plataforma Udemy para acesso offline. Este aplicativo utiliza métodos semelhantes aos dos navegadores para obter e salvar conteúdos de cursos, garantindo que apenas os cursos adquiridos oficialmente sejam baixados.</p>
+  O **Udemy Download** é uma ferramenta de código aberto que permite aos usuários salvarem para acesso offline **apenas os cursos adquiridos oficialmente** na plataforma Udemy. Ele utiliza métodos semelhantes aos dos navegadores para capturar e armazenar o conteúdo dos cursos, respeitando as políticas da plataforma.</p>
 
   <p align="center">
     <img src="https://img.shields.io/badge/Version-1.0.0.7-orange?style=flat-square" alt="Version">
@@ -13,85 +13,127 @@
       <img src="https://img.shields.io/badge/Download-latest-blue?style=flat-square" alt="Download">
     </a>
   </p>
-  </p>
 </div>
 
-> ⚠️ **Atenção**  
-Não pratique pirataria. Compartilhar cursos baixados é contra os termos de uso da plataforma e é considerado ilegal. Este aplicativo é apenas uma ferramenta destinada a salvar dados adquiridos oficialmente pelo usuário. Todas as ações realizadas com esta ferramenta são de total responsabilidade do usuário.
+---
 
-## Requisitos versão compilada
-- Sistema operacional: Windows 10 ou superior
-- Arquitetura: AMD64
+## ⚠️ Aviso Legal e Termos de Uso  
+
+O uso desta ferramenta **deve respeitar as leis de direitos autorais** e os **termos de serviço da Udemy**.  
+
+- **Não pratique pirataria!** O compartilhamento, redistribuição ou venda de cursos baixados com este software é ilegal e pode acarretar punições legais.  
+- **Este software não contorna ou quebra proteções DRM (Digital Rights Management)**. Ele **utiliza os mesmos métodos que os navegadores modernos** para acessar os conteúdos, respeitando os mecanismos de segurança existentes.  
+- **Todas as ações realizadas com esta ferramenta são de responsabilidade exclusiva do usuário.** O desenvolvedor **não se responsabiliza** por qualquer uso inadequado do programa.  
 
 ---
 
-## Instalação
+## ✅ Requisitos para versão compilada 
 
-1. Baixe o instalador em: [Download do Instalador](https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/win-amd64-SETUP.exe)
-2. Execute o instalador, clique em "Instalar" e aguarde a conclusão da instalação.
-3. Após a instalação, abra um novo terminal e execute o programa diretamente, pois ele estará disponível no PATH do sistema.
+### Windows 
+
+- **Sistema operacional:** Windows 10 ou superior  
+- **Arquitetura:** AMD64  
 
 ---
 
-## 🚀 Como Usar
+## 🔧 Instalação  
 
-Digite o comando `--help` para ver os comandos disponíveis:
+1. Baixe o instalador: [Download do Instalador](https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/win-amd64-SETUP.exe)  
+2. Execute o instalador, clique em **"Instalar"** e aguarde a conclusão.  
+3. Após a instalação, abra um **novo terminal** e execute o programa.  
 
+---
+
+## 🚀 Como Usar  
+
+Para ver os comandos disponíveis, utilize:  
 ```bash
 udemy_download --help
-```
 
-### 🔑 Login
+🔑 Login
 
-Após o download e instalação concluída, você deve iniciar uma sessão. Existem **duas maneiras de login**: por código OTP (One Time Password) ou por e-mail e senha.
+A autenticação pode ser feita de duas maneiras:
 
-#### 🔐 Login via OTP
-```bash
+✅ Login via OTP (Código Temporário)
+
 udemy_download --auth-code
-```
-1. Digite seu e-mail.  
-2. Aguarde um código de 6 dígitos, que será enviado para sua caixa de entrada.  
-3. O código será válido por 15 minutos.
 
-#### ✉️ Login via E-mail e Senha
-```bash
-udemy_download --auth-credentials 
-```
-1. Forneça seu e-mail e senha cadastrados na Udemy.  
-2. Após a autenticação, sua sessão será ativa.
+1. Insira seu e-mail cadastrado na Udemy.
+
+
+2. Digite o código de 6 dígitos recebido na sua caixa de entrada.
+
+
+3. O código expira em 15 minutos.
+
+
+
+✅ Login via E-mail e Senha
+
+udemy_download --auth-credentials
+
+1. Insira seu e-mail e senha cadastrados.
+
+
+2. Após autenticação, sua sessão permanecerá ativa.
+
+
+
 
 ---
 
-### 🎬 Download de Cursos
+🎬 Download de Cursos
 
-Depois de efetuar login, inicie sua sessão ativa com o comando:
+Depois de realizar o login, liste seus cursos adquiridos com:
 
-```bash
 udemy_download --my-section
-```
 
-- O programa carregará os cursos nos quais você está inscrito.
-- Você poderá escolher abrir os cursos no navegador (mais fácil de visualizar) ou exibi-los no console.
+O programa exibirá os cursos da sua conta.
 
-Cada curso possui um **identificador único**. Copie o ID do curso desejado, cole no terminal e aguarde o download das aulas. Fique atento ao terminal para acompanhar o progresso e eventuais erros.
+Escolha o curso desejado e inicie o download.
 
-### Local de Salvamento dos Seus Cursos
 
-Os cursos serão salvos no seguinte diretório em seu computador: **C:\Users\SEU-USUARIO\Udemy\Meus Cursos**
+📌 Os cursos serão salvos em:
 
-### ERROS
-- Se o app não abrir ao digitar comandos, abra uma nova guia no PowerShell e tente novamente. Caso persista, abra uma issue especificando: `versão do sistema`, `qual terminal está usando`, `comando utilizado`.
+C:\Users\SEU-USUARIO\Udemy\Meus Cursos
+
 
 ---
-### Integridade
 
-- SHA256: ` 03BB840C362450F001A6AC461901481BE9B253AEE742BCDD3BD7687DF35069AF`
+❗ Possíveis Erros e Soluções
 
-- versão: 1.0.0.7
+Erro ao abrir o app? Tente executar o programa via PowerShell ou prompt de comando (CMD).
+
+O comando não é reconhecido? Reinicie o terminal e tente novamente.
+
+Caso persista, crie uma issue informando:
+
+Versão do sistema operacional
+
+Terminal utilizado (PowerShell, CMD, etc.)
+
+Comando digitado e mensagem de erro
+
+
+
 
 ---
-## ❤️ Apoie o Projeto
 
-Se você gostou deste projeto e deseja [apoiar](https://paulocesar-dev404.github.io/me-apoiando-online/), sua contribuição será muito bem-vinda!
+🔒 Integridade
+
+- SHA256 do binário:
+
+03BB840C362450F001A6AC461901481BE9B253AEE742BCDD3BD7687DF35069AF
+
+- Versão: 1.0.0.7
+
+
 
 ---
+
+❤️ Apoie o Projeto
+
+Se este projeto foi útil para você, considere apoiar para que ele continue evoluindo!
+
+
+
