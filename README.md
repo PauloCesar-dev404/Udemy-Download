@@ -50,14 +50,16 @@ O uso desta ferramenta **deve respeitar as leis de direitos autorais** e os **te
 Para ver os comandos disponíveis, utilize:  
 ```bash
 udemy_download --help
+```
 
 🔑 Login
 
 A autenticação pode ser feita de duas maneiras:
 
 ✅ Login via OTP (Código Temporário)
-
+```bash
 udemy_download --auth-code
+```
 
 1. Insira seu e-mail cadastrado na Udemy.
 
@@ -70,9 +72,10 @@ udemy_download --auth-code
 
 
 ✅ Login via E-mail e Senha
+```bash
 
 udemy_download --auth-credentials
-
+```
 1. Insira seu e-mail e senha cadastrados.
 
 
@@ -86,8 +89,9 @@ udemy_download --auth-credentials
 🎬 Download de Cursos
 
 Depois de realizar o login, liste seus cursos adquiridos com:
-
+```bash
 udemy_download --my-section
+```
 
 O programa exibirá os cursos da sua conta.
 
