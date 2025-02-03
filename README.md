@@ -9,12 +9,16 @@
 
   <p align="center">
     <img src="https://img.shields.io/badge/Version-1.0.0.7-orange?style=flat-square" alt="Version">
-    <img src="https://img.shields.io/badge/Status-Active-success?style=flat-square" alt="Status">
     <a href="https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/win-amd64-SETUP.exe" target="_blank">
-      <img src="https://img.shields.io/badge/Download-latest-blue?style=flat-square" alt="Download">
+      <img src="https://img.shields.io/badge/Download-Windows-blue?style=flat-square" alt="Download Windows">
+    </a>
+  <a href="https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/linux-x86_64-SETUP.deb" target="_blank">
+      <img src="https://img.shields.io/badge/Download-Linux-blue?style=flat-square" alt="Download Linux">
     </a>
   </p>
 </div>
+
+
 
 ---
 
@@ -34,14 +38,26 @@ O uso desta ferramenta **deve respeitar as leis de direitos autorais** e os **te
 
 - **Sistema operacional:** Windows 10 ou superior  
 - **Arquitetura:** AMD64  
-
+### Linux
+- **Sistema operacional:** Debian ou baseados no mesmo.  
+- **Arquitetura:** AMD64 , x86 
 ---
 
-## 🔧 Instalação  
+## 🔧 Instalação Windows
 
 1. Baixe o instalador: [Download do Instalador](https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/win-amd64-SETUP.exe)  
 2. Execute o instalador, clique em **"Instalar"** e aguarde a conclusão.  
 3. Após a instalação, abra um **novo terminal** e execute o programa.  
+
+## 🔧 Instalação Linux
+
+1. Baixe o pacote: [Download do pacote .deb](https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/linux-x86_64-SETUP.deb)  
+2. Insatale:
+```bash
+apt install ./linux-x86_64-SETUP.deb
+```
+3. Após a instalação,e execute o programa `udemy_download`.  
+
 
 ---
 
