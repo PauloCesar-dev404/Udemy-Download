@@ -1,0 +1,5 @@
+colorama~=0.4.6
+requests~=2.32.3
+cx_Freeze~=7.2.7
+pywidevine~=1.8.0
+cloudscraper~=1.2.71

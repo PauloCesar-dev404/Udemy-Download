@@ -3,38 +3,35 @@
     <img src="assets/favicon.ico" alt="Logo" width="280"><br>
     Udemy Download
   </h1>
-  <p align="center">💾 Salve seus cursos localmente e assista quando quiser! 📚</p>
+  <p align="center">
+  O Udemy Download é uma ferramenta de código aberto que permite aos usuários salvar cursos adquiridos na plataforma Udemy para acesso offline. Este aplicativo utiliza métodos semelhantes aos dos navegadores para obter e salvar conteúdos de cursos, garantindo que apenas os cursos adquiridos oficialmente sejam baixados.</p>
 
   <p align="center">
-    <img src="https://img.shields.io/badge/Version-1.0.0.4-orange?style=flat-square" alt="Version">
+    <img src="https://img.shields.io/badge/Version-1.0.0.6-orange?style=flat-square" alt="Version">
     <img src="https://img.shields.io/badge/Status-Active-success?style=flat-square" alt="Status">
     <a href="https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/win-amd64-SETUP.exe" target="_blank">
       <img src="https://img.shields.io/badge/Download-latest-blue?style=flat-square" alt="Download">
     </a>
-    <a href="https://t.me/udemy_downloadx" target="_blank">
-      <img src="https://img.shields.io/badge/Telegram-Join%20Us-blue.svg?logo=telegram" alt="Telegram">
-    </a>
+  </p>
   </p>
 </div>
 
-
-
->⚠️ **Atenção**  
+> ⚠️ **Atenção**  
 Não pratique pirataria. Compartilhar cursos baixados é contra os termos de uso da plataforma e é considerado ilegal. Este aplicativo é apenas uma ferramenta destinada a salvar dados adquiridos oficialmente pelo usuário. Todas as ações realizadas com esta ferramenta são de total responsabilidade do usuário.
 
-## Requisitos 
-
-- sistema operacional Windows 10 ou superior
+## Requisitos versão compilada
+- Sistema operacional: Windows 10 ou superior
 - Arquitetura: AMD64
+
 ---
-## instalação
 
-Baixe em [Download](https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/win-amd64-SETUP.exe)
+## Instalação
 
-Execute o instalador,(clique em instalar obviamente...) aguarde a instalação concluir.
-Agora é só abrir um novo terminal e chamar o programa! ,pois o mesmo está no path do sistema
+1. Baixe o instalador em: [Download do Instalador](https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/win-amd64-SETUP.exe)
+2. Execute o instalador, clique em "Instalar" e aguarde a conclusão da instalação.
+3. Após a instalação, abra um novo terminal e execute o programa diretamente, pois ele estará disponível no PATH do sistema.
 
-<br>
+---
 
 ## 🚀 Como Usar
 
@@ -68,6 +65,7 @@ udemy_download --auth-credentials
 ### 🎬 Download de Cursos
 
 Depois de efetuar login, inicie sua sessão ativa com o comando:
+
 ```bash
 udemy_download --my-section
 ```
@@ -77,17 +75,22 @@ udemy_download --my-section
 
 Cada curso possui um **identificador único**. Copie o ID do curso desejado, cole no terminal e aguarde o download das aulas. Fique atento ao terminal para acompanhar o progresso e eventuais erros.
 
-
-
 ### Local de Salvamento dos Seus Cursos
 
-São salvos no seguinte diretório em seu computador: **C:\Users\SEU-USUARIO\Udemy\Meus Cursos**
+Os cursos serão salvos no seguinte diretório em seu computador: **C:\Users\SEU-USUARIO\Udemy\Meus Cursos**
 
-### ERR
-- Se o app não abre ao digitar comandos....abra uma nova guia no PowerShell e tente novamente,caso persista abra uma issue especificações: `versão do sistema`,`qual terminal está usando`,`comando utilizado`
+### ERROS
+- Se o app não abrir ao digitar comandos, abra uma nova guia no PowerShell e tente novamente. Caso persista, abra uma issue especificando: `versão do sistema`, `qual terminal está usando`, `comando utilizado`.
+
 ---
+### Integridade
 
+SHA256: [B40FA0F4D11FABA3F403B710342F272BD59D90F915B5EA13E57BCC6D6DAD034E]()
+
+versão: 1.0.0.7
+---
 ## ❤️ Apoie o Projeto
 
-Se você gostou deste projeto e deseja [apoiar](https://paulocesar-dev404.github.io/me-apoiando-online/)
+Se você gostou deste projeto e deseja [apoiar](https://paulocesar-dev404.github.io/me-apoiando-online/), sua contribuição será muito bem-vinda!
 
+---
