@@ -4,6 +4,7 @@
     Udemy Download
   </h1>
   <p align="center">
+
   O **Udemy Download** é uma ferramenta de código aberto que permite aos usuários salvarem para acesso offline **apenas os cursos adquiridos oficialmente** na plataforma Udemy. Ele utiliza métodos semelhantes aos dos navegadores para capturar e armazenar o conteúdo dos cursos, respeitando as políticas da plataforma.</p>
 
   <p align="center">
