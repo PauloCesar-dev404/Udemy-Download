@@ -40,7 +40,7 @@ O uso desta ferramenta **deve respeitar as leis de direitos autorais** e os **te
 - **Arquitetura:** AMD64  
 ### Linux
 - **Sistema operacional:** Debian ou baseados no mesmo.  
-- **Arquitetura:** AMD64 , x86 
+- **Arquitetura:** x86_64
 ---
 
 ## 🔧 Instalação Windows
