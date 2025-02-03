@@ -85,9 +85,10 @@ Os cursos serão salvos no seguinte diretório em seu computador: **C:\Users\SEU
 ---
 ### Integridade
 
-SHA256: ` 03BB840C362450F001A6AC461901481BE9B253AEE742BCDD3BD7687DF35069AF`
+- SHA256: ` 03BB840C362450F001A6AC461901481BE9B253AEE742BCDD3BD7687DF35069AF`
 
-versão: 1.0.0.7
+- versão: 1.0.0.7
+
 ---
 ## ❤️ Apoie o Projeto
 
