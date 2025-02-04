@@ -137,19 +137,6 @@ Comando digitado e mensagem de erro
 
 
 
-
----
-
-🔒 Integridade
-
-- SHA256 do binário:
-
-03BB840C362450F001A6AC461901481BE9B253AEE742BCDD3BD7687DF35069AF
-
-- Versão: 1.0.0.7
-
-
-
 ---
 
 ❤️ Apoie o Projeto
