@@ -70,35 +70,16 @@ udemy_download --help
 
 🔑 Login
 
-A autenticação pode ser feita de duas maneiras:
-
-✅ Login via OTP (Código Temporário)
+✅ Login via OTP (Código Temporário) maneira mais segura!
 ```bash
 udemy_download --auth-code
 ```
 
-1. Insira seu e-mail cadastrado na Udemy.
+Insira seu e-mail cadastrado na Udemy.
+![receber o código otp](<assets/Captura de tela 2025-02-04 194402.png>)
 
-
-2. Digite o código de 6 dígitos recebido na sua caixa de entrada.
-
-
-3. O código expira em 15 minutos.
-
-
-
-✅ Login via E-mail e Senha
-```bash
-
-udemy_download --auth-credentials
-```
-1. Insira seu e-mail e senha cadastrados.
-
-
-2. Após autenticação, sua sessão permanecerá ativa.
-
-
-
+Digite o código de 6 dígitos recebido na sua caixa de entrada.O código expira em 15 minutos.
+![inserir o código](<assets/Captura de tela 2025-02-04 194500.png>)
 
 ---
 
@@ -108,10 +89,10 @@ Depois de realizar o login, liste seus cursos adquiridos com:
 ```bash
 udemy_download --my-section
 ```
+![my courses](<assets/Captura de tela 2025-02-04 194546.png>)
 
-O programa exibirá os cursos da sua conta.
 
-Escolha o curso desejado e inicie o download.
+abra no navegador e reinicie o app passando id do curso desejado se você desejar salvar legendas...ou se não apenas digite o id assim como o app solicitará após abrir os cursos.
 
 
 📌 Os cursos serão salvos em:
@@ -123,17 +104,21 @@ C:\Users\SEU-USUARIO\Udemy\Meus Cursos
 
 ❗ Possíveis Erros e Soluções
 
-Erro ao abrir o app? Tente executar o programa via PowerShell ou prompt de comando (CMD).
+- Erro ao abrir o app? Tente executar o programa via PowerShell ou prompt de comando (CMD).
 
-O comando não é reconhecido? Reinicie o terminal e tente novamente.
+- O comando não é reconhecido? Reinicie o terminal e tente novamente.
 
-Caso persista, crie uma issue informando:
+- erro no login mesmo digitando e-mail se senhas corretos? Use login via otp
 
-Versão do sistema operacional
 
-Terminal utilizado (PowerShell, CMD, etc.)
+<br>
+<br><br><br>
 
-Comando digitado e mensagem de erro
+>Caso persista, crie uma issue informando:
+> Versão do sistema operacional
+> 
+>Terminal utilizado (PowerShell, CMD, etc.)
+>Comando digitado e mensagem de erro
 
 
 

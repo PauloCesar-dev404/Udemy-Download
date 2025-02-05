@@ -121,9 +121,9 @@ class Auth:
         self._password = credentials.get('password', '')
         time.sleep(3)
         anima.stop()
-        if self._password:
+        if len(self._password.strip()) > 1:
             self._auth.login(email=self._email, password=self._password)
-            animate2 = AnimationConsole(text='Autenticando...')
+            animate2 = AnimationConsole(text='Autenticando com e-mail e senha....')
             animate2.start()
             if self._auth.verif_login():
                 animate2.stop()
@@ -133,7 +133,7 @@ class Auth:
                 return False
         else:
             self._auth.login_passwordless(email=self._email)
-        animate2 = AnimationConsole(text='Autenticando...')
+        animate2 = AnimationConsole(text='Autenticando via OTP...')
         animate2.start()
         if self._auth.verif_login():
             animate2.stop()
