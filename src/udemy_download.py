@@ -106,8 +106,8 @@ class M3u8Downloader:
 
 class Auth:
     def __init__(self):
-        self._password = None
-        self._email = None
+        self._password = ""
+        self._email = ""
         self._auth = udemy_userAPI.UdemyAuth()
 
     def is_loggin(self) -> bool:
