@@ -1,8 +1,5 @@
 colorama~=0.4.6
-requests~=2.32.3
-#cx_Freeze~=7.2.7 # apenas se for compilar...
-pywidevine~=1.8.0
-cloudscraper~=1.2.71
+#cx_Freeze~=7.2.7 # apenas se for compilar
 udemy-userapi~=0.3.10
 ffmpeg-for-python~=0.3.5
 yt-dlp~=2025.01.26
