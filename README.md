@@ -108,7 +108,7 @@ C:\Users\SEU-USUARIO\Udemy\Meus Cursos
 
 - O comando não é reconhecido? Reinicie o terminal e tente novamente.
 
-- erro no login mesmo digitando e-mail se senhas corretos? Use login via otp
+- erro no login mesmo digitando e-mail e senhas corretos? Use login via otp
 
 
 <br>
