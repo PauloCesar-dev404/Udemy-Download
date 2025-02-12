@@ -52,8 +52,8 @@ O uso desta ferramenta **deve respeitar as leis de direitos autorais** e os **te
 ## 🔧 Instalação Linux
 
 1. Baixe o pacote: [Download do pacote .deb](https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/linux-x86_64-SETUP.deb)  
-2. Insatale:
-```bash
+2. Instale:
+```bas
 apt install ./linux-x86_64-SETUP.deb
 ```
 3. Após a instalação,e execute o programa `udemy_download`.  
