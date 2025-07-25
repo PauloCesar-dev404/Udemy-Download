@@ -15,6 +15,10 @@
   <a href="https://github.com/PauloCesar-dev404/Udemy-Download/raw/refs/heads/main/versions/linux-x86_64-SETUP.deb" target="_blank">
       <img src="https://img.shields.io/badge/Download-Linux-blue?style=flat-square" alt="Download Linux">
     </a>
+<a href="https://paulocesar-dev404.github.io/me-apoiando-online/" target="_blank"> 
+<img src="https://img.shields.io/badge/Apoie o Desenvolvedor-orange?style=flat" alt="apoie">
+</a>
+    
   </p>
 </div>
 
