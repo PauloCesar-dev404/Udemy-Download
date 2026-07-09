@@ -79,25 +79,14 @@ udemy_download --help
 udemy_download --auth-code
 ```
 
-Insira seu e-mail cadastrado na Udemy.
-![receber o código otp](<assets/Captura de tela 2025-02-04 194402.png>)
+- Insira seu e-mail cadastrado na Udemy.
 
-Digite o código de 6 dígitos recebido na sua caixa de entrada.O código expira em 15 minutos.
-![inserir o código](<assets/Captura de tela 2025-02-04 194500.png>)
+- Digite o código de 6 dígitos recebido na sua caixa de entrada.O código expira em 15 minutos.
+
 
 ---
 
 🎬 Download de Cursos
-
-Depois de realizar o login, liste seus cursos adquiridos com:
-```bash
-udemy_download 
-```
-![my courses](<assets/Captura de tela 2025-02-04 194546.png>)
-
-
-abra no navegador e reinicie o app passando id do curso desejado se você desejar salvar legendas...ou se não apenas digite o id assim como o app solicitará após abrir os cursos.
-
 
 📌 Os cursos serão salvos em:
 
