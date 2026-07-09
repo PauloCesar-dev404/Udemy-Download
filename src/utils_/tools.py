@@ -1,10 +1,10 @@
 import os
+import shutil
 from pathlib import Path
 import requests
 import yt_dlp
-from colorama import Fore, Style
+from .animation import Fore, Style
 from udemy_userAPI.api import HEADERS_USER
-
 
 class MPDExtractor:
     def __init__(self):
@@ -17,7 +17,6 @@ class MPDExtractor:
         file_name = f"index_{lecture_id}.mpd"
         mpd_path = Path(out_path, file_name)
 
-        # Certifique-se de que o diretório de saída existe
         mpd_path.parent.mkdir(parents=True, exist_ok=True)
         try:
             with open(mpd_path, "wb") as f:
@@ -35,7 +34,6 @@ class MPDExtractor:
             format_id = results.get("format_id")
             best_audio_format_id = format_id.split("+")[1]
 
-            # Filtra apenas os formatos de vídeo, organiza por resolução e guarda o maior
             video_formats = [f for f in formats if "video" in f.get("format_note")]
             best_video_format = max(video_formats, key=lambda x: x.get("height", 0), default=None)
 
@@ -44,7 +42,8 @@ class MPDExtractor:
                 extension = best_video_format.get("ext")
                 height = best_video_format.get("height")
                 width = best_video_format.get("width")
-                init_url = best_video_format.get("fragments")[0]["url"]
+                fragments = best_video_format.get("fragments", [{}])
+                init_url = fragments[0].get("url") or fragments[0].get("path", "")
 
                 _temp.append(
                     {
@@ -53,7 +52,7 @@ class MPDExtractor:
                         "width": str(width),
                         "format_id": f"{format_id},{best_audio_format_id}",
                         "extension": extension,
-                        "download_url": best_video_format.get("manifest_url"),
+                        "download_url": url,
                         "init_url": init_url
                     }
                 )
@@ -62,13 +61,14 @@ class MPDExtractor:
             raise Exception(f"erro ao obter MPD: {e}")
         return _temp, str(mpd_path)
 
-
 def save_external_links(url, title, output_path):
     """
     Salva um link em um arquivo .txt.
-    :param url: O URL a ser salvo.
-    :param title: O título que será usado como nome do arquivo.
-    :param output_path: O caminho do diretório onde o arquivo será salvo.
+
+    Args:
+        url: O URL a ser salvo.
+        title: O título que será usado como nome do arquivo.
+        output_path: O caminho do diretório onde o arquivo será salvo.
     """
     filename = f'{title}.txt'
     output_path_file = os.path.join(output_path, filename)
@@ -76,33 +76,31 @@ def save_external_links(url, title, output_path):
         return
 
     try:
-        # Verifica se o diretório de saída existe e cria, se necessário
+
         os.makedirs(output_path, exist_ok=True)
 
-        # Abrir o arquivo em modo de escrita e salvar o link (substitui o conteúdo existente)
         with open(output_path_file, 'w', encoding='utf-8') as file:
             file.write(f"{url}\n")
     except Exception as e:
         raise Exception(f"Ocorreu um erro ao salvar o link: {e}")
 
-
 def download_files(file_url, title, download_path):
     """
     Faz o download de arquivos a partir de uma lista de dicionários.
 
-    :param title:
-    :param file_url:
-    :param self:
-    :param download_path: Caminho onde os arquivos serão salvos.
+    Args:
+        title:
+        file_url:
+        self:
+        download_path: Caminho onde os arquivos serão salvos.
     """
     try:
         file_path = os.path.join(download_path, title)
         if os.path.exists(file_path):
             return
         response = requests.get(file_url, stream=True, headers=HEADERS_USER)
-        response.raise_for_status()  # Verifica erros na requisição
+        response.raise_for_status()
 
-        # Caminho do arquivo para salvar
         with open(file_path, "wb") as file:
             for chunk in response.iter_content(chunk_size=8192):
                 file.write(chunk)
@@ -110,11 +108,9 @@ def download_files(file_url, title, download_path):
     except requests.exceptions.RequestException as e:
         raise Exception(f"Erro ao baixar {title}: {e}")
 
-
 def get_files_uris(data_file):
     file_url = data_file['File'][0]['file']
     return file_url
-
 
 def get_init_url(url_mpd, output_path, lecture_id):
     mpd_extractor = MPDExtractor()
@@ -124,20 +120,19 @@ def get_init_url(url_mpd, output_path, lecture_id):
     init_url = mpd_data[0].get("init_url")
     return {'format_id': format_id, 'download_url': url, 'init_url': init_url, 'mpd_dir': mpd_dir}
 
-
 def get_file(url, name, dir_save):
     try:
-        # Fazer o download do arquivo
-        res = requests.get(url, headers=HEADERS_USER, stream=True)
-        res.raise_for_status()  # Levanta exceção se houver falha no download
 
-        # Nome do arquivo local
+        os.makedirs(dir_save, exist_ok=True)
+
+        res = requests.get(url, headers=HEADERS_USER, stream=True)
+        res.raise_for_status()
+
         segment_file = os.path.join(dir_save, name)
 
-        # Salvar o conteúdo como texto
         with open(segment_file, 'wt', encoding='utf-8') as f:
             for chunk in res.iter_content(chunk_size=8192):
-                # Decodificar o chunk para texto antes de escrever
+
                 f.write(chunk.decode('utf-8'))
 
         return segment_file
@@ -148,20 +143,21 @@ def get_file(url, name, dir_save):
     except Exception as e:
         raise Exception(f"Erro ao obter 'MPD': {e}")
 
-
 def save_article(article, output_file,output_name):
     """
     Salva o artigo no arquivo especificado se ele ainda não existir.
 
-    :param article: O conteúdo do artigo a ser salvo.
-    :param output_file: O caminho do arquivo onde o artigo será salvo.
-    :return: Retorna uma mensagem indicando se o arquivo foi salvo ou já existia.
+    Args:
+        article: O conteúdo do artigo a ser salvo.
+        output_file: O caminho do arquivo onde o artigo será salvo.
+
+    Returns:
+        Retorna uma mensagem indicando se o arquivo foi salvo ou já existia.
     """
     try:
         if os.path.exists(output_file):
             return
 
-        # Salva o artigo no arquivo
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(article)
         print(f"\n\t==> AULA: {Fore.GREEN}{output_name} Baixada!{Style.RESET_ALL}")
@@ -169,20 +165,61 @@ def save_article(article, output_file,output_name):
     except Exception as e:
         return f"Erro ao salvar o artigo: {e}"
 
-
 def baixar_video(url_video, output_file, animation, output_name):
     try:
         response = requests.get(url_video, stream=True, headers=HEADERS_USER)
-        response.raise_for_status()  # Verifica se houve algum erro na requisição
+        response.raise_for_status()
         downloaded_size = 0
 
-        with open(output_file, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):  # Baixa em pedaços de 8 KB
-                if chunk:
-                    f.write(chunk)
-                    downloaded_size += len(chunk)
-        animation.stop()
+        try:
+            with open(output_file, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+                        downloaded_size += len(chunk)
+        finally:
+            animation.stop()
+
         print(f"\n\t==> AULA: {Fore.GREEN}{output_name} Baixada!{Style.RESET_ALL}")
 
     except requests.exceptions.RequestException as e:
+        animation.stop()
         raise Exception(f"Erro ao baixar o vídeo: {e}")
+
+def del_path(path_dir):
+    """
+    Deleta um diretório com todo o seu conteúdo de forma segura.
+
+    Args:
+        path_dir (str): O caminho (path) do diretório a ser deletado.
+    """
+
+    if not os.path.exists(path_dir):
+        return
+
+    if not os.path.isdir(path_dir):
+        return
+
+    try:
+        shutil.rmtree(path_dir)
+    except Exception as e:
+        return
+def deletar_arquivos_em_pasta(caminho_da_pasta):
+    """
+    Deleta todos os arquivos dentro de uma pasta, sem apagar a pasta em si.
+    """
+    try:
+
+        if not os.path.exists(caminho_da_pasta):
+            return
+
+        for nome_do_item in os.listdir(caminho_da_pasta):
+            caminho_completo_do_item = os.path.join(caminho_da_pasta, nome_do_item)
+
+            if os.path.isfile(caminho_completo_do_item):
+                os.remove(caminho_completo_do_item)
+
+            elif os.path.isdir(caminho_completo_do_item):
+                shutil.rmtree(caminho_completo_do_item)
+    except Exception as e:
+        raise Exception(f"Falha ao remover cache....de downloads!\n\n~> {e}")

@@ -18,5 +18,3 @@ setup(
         }
     }
 )
-
-# python setup.py build

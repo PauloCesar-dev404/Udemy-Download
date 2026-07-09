@@ -3,13 +3,14 @@ import re
 import shutil
 import time
 import traceback
-from colorama import Fore, Style
+from .animation import Fore, Style
 from yt_dlp import YoutubeDL
 from ffmpeg_for_python import FFmpeg
 import logging
+
+from . import deletar_arquivos_em_pasta
 from .constants import DEBUG_DEV
 logging.disable(logging.CRITICAL)
-
 
 class NoLogger:
     def debug(self, msg):
@@ -21,17 +22,15 @@ class NoLogger:
     def error(self, msg):
         pass
 
-
 def handle_segments(url, format_id, lecture_id, path_frags):
     """
     Faz o download de segmentos de vídeo e áudio usando yt-dlp diretamente como biblioteca.
     """
     from .animation import AnimationConsole
-    # Caminhos dos arquivos de saída
+
     video_filepath_enc = os.path.join(path_frags, f"{lecture_id}.encrypted.mp4")
     audio_filepath_enc = os.path.join(path_frags, f"{lecture_id}.encrypted.m4a")
 
-    # Configurações do yt-dlp
     ydl_opts = {
         "format": format_id,
         "outtmpl": os.path.join(path_frags, f"{lecture_id}.encrypted.%(ext)s"),
@@ -40,7 +39,7 @@ def handle_segments(url, format_id, lecture_id, path_frags):
         "fixup": "never",
         "downloader": "aria2c",
         "downloader_args": {
-            "aria2c": ["--disable-ipv6"]
+            "aria2c": ["--disable-ipv6", "--quiet", "--console-log-level=error", "--summary-interval=0"]
         },
         "noprogress": True,
         "quiet": True,
@@ -50,7 +49,6 @@ def handle_segments(url, format_id, lecture_id, path_frags):
         "logger": NoLogger()
     }
 
-    # Animação de progresso
     animation = AnimationConsole(text="Baixando Segmentos", color_frame=Fore.LIGHTCYAN_EX)
 
     try:
@@ -59,7 +57,6 @@ def handle_segments(url, format_id, lecture_id, path_frags):
             ydl.download([url])
         animation.stop()
 
-        # Verifica se os arquivos foram baixados corretamente
         if os.path.exists(video_filepath_enc) or os.path.exists(audio_filepath_enc):
             return {
                 "video_filepath": video_filepath_enc,
@@ -72,8 +69,8 @@ def handle_segments(url, format_id, lecture_id, path_frags):
         animation.stop()
         raise Exception(f"Erro durante o download dos segmentos: {e}")
 
-
 def mux_process(mpd_path,
+                frags_dir,
                 video_filepath,
                 audio_filepath,
                 video_title: str,
@@ -94,7 +91,7 @@ def mux_process(mpd_path,
             raise Exception("mpd não encontrado...")
         if not os.path.exists(output_dir):
             raise Exception("Dir de saída não existe!")
-        path_temp = generate_temp_file_path(suffix='video_', extension='mp4', output_dir=output_dir)
+        path_temp = generate_temp_file_path(suffix='video_', extension='mp4', output_dir=frags_dir)
         final_path = os.path.join(output_dir, video_title)
         if DEBUG_DEV:
             print(f"TEMP_PATH: {path_temp}\n"
@@ -110,6 +107,8 @@ def mux_process(mpd_path,
         command = [
             *transcode.split(),
             "-y",
+            "-hide_banner",
+            "-loglevel", "error",
             *video_decryption_arg.split(),
             "-i", video_filepath,
             *audio_decryption_arg.split(),
@@ -125,7 +124,7 @@ def mux_process(mpd_path,
             path_temp
         ]
         process = ffmpeg.args(command).run()
-        # Captura a saída do ffmpeg em tempo real
+
         animation.start()
         for line in process:
             ...
@@ -136,57 +135,67 @@ def mux_process(mpd_path,
         print(f"\n\t==> AULA: {Fore.GREEN}{video_title} Baixada!{Style.RESET_ALL}")
 
         ffmpeg.reset_ffmpeg()
-        ## mover o file agora com o nome original
+
         shutil.move(path_temp, final_path)
+        deletar_arquivos_em_pasta(frags_dir)
     except Exception as e:
+        if 'animation' in locals():
+            animation.stop()
         if DEBUG_DEV:
             e = traceback.format_exc()
         raise Exception(e)
-
 
 def extrair_numero(nome_arquivo):
     """Extrai o número de um nome de arquivo, ou retorna infinito se não encontrar."""
     match = re.search(r'(\d+)', nome_arquivo)
     return int(match.group(1)) if match else float('inf')
 
-
 def ffmpeg_concatener(output_name: str, output_save, course_id, extension: str, dir_segments: str):
     """
     Concatena segmentos de vídeo em um único arquivo.
 
-    :param output_name: Nome do vídeo final.
-    :param output_save: Diretório onde salvar o vídeo final.
-    :param course_id: ID do curso.
-    :param extension: Extensão dos arquivos de segmento.
-    :param dir_segments: Diretório onde estão os segmentos.
+    Args:
+        output_name: Nome do vídeo final.
+        output_save: Diretório onde salvar o vídeo final.
+        course_id: ID do curso.
+        extension: Extensão dos arquivos de segmento.
+        dir_segments: Diretório onde estáo os segmentos.
     """
     from .utils import generate_temp_file_path
     from .animation import AnimationConsole
     ffmpeg = FFmpeg()
-    arquivo_lista = os.path.join(dir_segments, 'lista.txt')
+    arquivo_lista = os.path.join(dir_segments, 'list.txt')
     final_path = os.path.join(output_save, output_name)
-    path_temp = generate_temp_file_path(suffix='video_', extension='mp4', output_dir=output_save)
+    path_temp = generate_temp_file_path(suffix='video_', extension='mp4', output_dir=dir_segments)
     animation = AnimationConsole(text='Gerando Vídeo', color_frame=Fore.LIGHTCYAN_EX, color=Fore.LIGHTMAGENTA_EX)
 
     if DEBUG_DEV:
         print(f"TEMP_PATH: {path_temp}\nFINAL_PATH: {final_path}\n")
 
     try:
-        # Abre o arquivo lista.txt para escrita
+
         with open(arquivo_lista, 'w') as f:
-            # Lista todos os arquivos no diretório e filtra apenas os arquivos com a extensão correta
+
             arquivos_ts = [arquivo for arquivo in os.listdir(dir_segments) if
                            arquivo.endswith(f'.{extension}') and str(course_id) in arquivo]
-            # Ordena os arquivos com base no número extraído
+
             arquivos_ts.sort(key=extrair_numero)
-            # Escreve cada arquivo no lista.txt
+
             for arquivo in arquivos_ts:
                 caminho_absoluto = os.path.abspath(os.path.join(dir_segments, arquivo))
                 f.write(f"file '{caminho_absoluto}'\n")
 
-        cmd = ['-y', '-f', 'concat', '-safe', '0', '-i', arquivo_lista, '-c', 'copy', f'{path_temp}']
+        command = [
+            '-f', 'concat',
+            '-safe', '0',
+            '-i', arquivo_lista,
+            '-c', 'copy',
+            '-hide_banner',
+            '-loglevel', 'error',
+            path_temp
+        ]
         animation.start()
-        for i in ffmpeg.args(cmd).run():
+        for i in ffmpeg.args(command).run():
             ...
         animation.stop()
 
@@ -195,248 +204,179 @@ def ffmpeg_concatener(output_name: str, output_save, course_id, extension: str, 
         a.stop()
         print(f"\n\t==> AULA: {Fore.GREEN}{output_name} Baixada!{Style.RESET_ALL}")
 
-        # Mover o arquivo agora com o nome original
         shutil.move(path_temp, final_path)
         ffmpeg.reset_ffmpeg()
+
+        deletar_arquivos_em_pasta(dir_segments)
 
     except Exception as e:
         raise Exception(e)
 
+def gerar_html_exercicio(assessment_data, output_name, output_path="exercicio_view.html", content_extra=None):
+
+    titulo = assessment_data.get('title', 'Conteúdo da Aula')
+    instrucoes = assessment_data['prompt'].get('instructions', '') if 'prompt' in assessment_data else ""
+    objetivo = assessment_data['prompt'].get('learning_objective', 'N/A') if 'prompt' in assessment_data else ""
+
+    display_content = content_extra if content_extra else instrucoes
+
+    html_template = f"""
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            body {  font-family: 'Udemy Sans', Arial, sans-serif; background: #f7f9fa; padding: 20px; }
+            .problem-container--problem-container--vhRvv {  background: white; border: 1px solid #dcdfe2; padding: 20px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            .ud-heading-lg {  font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; }
+            .ud-text-md {  font-size: 1rem; line-height: 1.5; color: #1c1d1f; }
+        </style>
+    </head>
+    <body>
+        <div class="problem-container--problem-container--vhRvv">
+            <div class="ud-heading-lg">{titulo}</div>
+            <div class="ud-text-md">{display_content}</div>
+        </div>
+    </body>
+    </html>
+    """
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(html_template)
+    print(f"\n\t==> AULA: {Fore.GREEN}{output_name} Baixada!{Style.RESET_ALL}")
+
+def sv_exer_local(assessment_data, output_name, pasta_base="exercicios"):
+    path = pasta_base
+    os.makedirs(path, exist_ok=True)
+
+    tipo = assessment_data.get('assessment_type')
+
+    if tipo == 'coding-problem':
+
+        for categoria in ['initial_files', 'solution_files', 'test_files']:
+            for file_obj in assessment_data['prompt'].get(categoria, []):
+                file_path = os.path.join(path, categoria, file_obj['file_name'])
+                os.makedirs(os.path.dirname(file_path), exist_ok=True)
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(file_obj['content'])
+        gerar_html_exercicio(assessment_data, output_name, output_path=os.path.join(path, "instrucoes.html"))
+
+    elif tipo == 'multiple-choice':
+
+        html_quiz = generate_quiz({"results": [assessment_data]})
+        with open(os.path.join(path, "quiz.html"), "w", encoding="utf-8") as f:
+            f.write(html_quiz)
+        print(f"\n\t==> QUIZ: {Fore.CYAN}{output_name} Baixado!{Style.RESET_ALL}")
 
 def generate_quiz(quiz_data: dict) -> str:
-    results = quiz_data.get('results', [])
-    questions = []
 
-    for d in results:
-        question_text = d.get('prompt', {}).get('question', '')
-        id_question = d.get('id', '')
-
-        # Obter a resposta correta
-        if d.get('correct_response'):
-            correct_index = ord(d['correct_response'][0].lower()) - ord('a')
-            answers = d.get('prompt', {}).get('answers', [])
-            correct_text = answers[correct_index] if 0 <= correct_index < len(answers) else ""
-        else:
-            correct_text = ""
-
-        answers = d.get('prompt', {}).get('answers', [])
-        questions.append({
-            'id': id_question,
-            'question': question_text,
-            'correct': correct_text,
-            'answers': answers
-        })
-
-    # Geração do HTML
-    html_content = '''
-<!DOCTYPE html>
-<html lang="en">
+    html = '''<!DOCTYPE html>
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz</title>
     <style>
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background-color: #eef2f5;
-            margin: 0;
-            padding: 0;
-            color: #333;
-            line-height: 1.6;
+        :root {
+            --applied-background-default: oklch(100% 0 0deg);
+            --applied-text-default: oklch(29.74% 0.0362 281.74deg);
+            --applied-border-default: oklch(86.72% 0.0192 282.72deg);
+            --applied-border-positive: oklch(44.49% 0.0863 157.92deg);
+            --applied-border-negative: oklch(55.73% 0.2161 29.71deg);
         }
-        .container {
-            width: 90%;
-            max-width: 900px;
-            margin: 30px auto;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-            border-radius: 8px;
-        }
-        h2 {
-            text-align: center;
-            color: #2c3e50;
-        }
-        .question {
-            margin-bottom: 30px;
-            padding: 15px;
-            border: 1px solid #dcdcdc;
-            border-radius: 8px;
-            background-color: #fafafa;
-        }
-        .question h3 {
-            margin-top: 0;
-            color: #2c3e50;
-            font-size: 1.2rem;
-        }
-        .question ul {
-            list-style: none;
-            padding: 0;
-        }
-        .question li {
-            padding: 10px;
-            margin: 8px 0;
-            background-color: #f7f7f7;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .question li:hover {
-            background-color: #eaeaea;
-        }
-        .question li.selected {
-            background-color: #d0e4f5;
-        }
-        .question li.correct {
-            background-color: #27ae60;
-            color: #fff;
-        }
-        .question li.incorrect {
-            background-color: #e74c3c;
-            color: #fff;
-        }
-        .btn {
-            display: block;
-            margin: 20px auto;
-            background-color: #1e74b8;
-            color: #fff;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .btn:hover {
-            background-color: #15689a;
-        }
-        .btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
+        body { font-family: 'Udemy Sans', Roboto, sans-serif; background-color: var(--applied-background-default); color: var(--applied-text-default); padding: 20px; }
+        .quiz-view--container { max-width: 800px; margin: auto; }
+        .mc-quiz-question--container { background: #fff; border: 1px solid var(--applied-border-default); padding: 24px; border-radius: 8px; margin-bottom: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .mc-quiz-question--question-prompt { font-weight: 600; margin-bottom: 15px; font-size: 1.1rem; }
+        .ud-unstyled-list { list-style: none; padding: 0; }
+        .mc-quiz-answer--answer { display: flex; padding: 12px; border: 1px solid var(--applied-border-default); margin: 8px 0; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .mc-quiz-answer--answer:hover { background-color: #f1f2f3; }
+        .mc-quiz-answer--correct { background-color: oklch(97.23% 0.0176 170.1deg); border-color: var(--applied-border-positive) !important; }
+        .mc-quiz-answer--incorrect { background-color: oklch(95.79% 0.0208 21.17deg); border-color: var(--applied-border-negative) !important; }
+        .code-block { background: #282c34; color: #abb2bf; padding: 10px; border-radius: 4px; font-family: monospace; margin: 10px 0; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Quiz</h2>
+    <div class="quiz-view--container">
     '''
 
-    for question in questions:
-        html_content += f'''
-        <div class="question" id="question-{question['id']}">
-            <h3>{str(question.get('id', '')).strip()} {question.get('question', '')}</h3>
-            <ul>
+    for i, q in enumerate(quiz_data.get('results', []), 1):
+        prompt = q.get('prompt', {})
+        question_text = prompt.get('question', '').replace('<pre', '<div class="code-block"><pre').replace('</pre>',
+                                                                                                           '</pre></div>')
+
+        gabarito_letra = q.get('correct_response', [''])[0].lower()
+        idx_gabarito = ord(gabarito_letra) - ord('a') if gabarito_letra.isalpha() else -1
+        answers = prompt.get('answers', [])
+
+        text_gabarito = answers[idx_gabarito] if 0 <= idx_gabarito < len(answers) else ""
+
+        text_gabarito_clean = text_gabarito.replace('<p>', '').replace('</p>', '').strip()
+
+        html += f'''
+        <div class="mc-quiz-question--container">
+            <div class="mc-quiz-question--question-prompt">Pergunta {i}: {question_text}</div>
+            <ul class="ud-unstyled-list">
         '''
-        for answer in question["answers"]:
-            safe_answer = answer.replace("'", "\\'")
-            html_content += f'''
-                <li onclick="selectAnswer(this, '{question["id"]}', '{safe_answer}')">{answer}</li>
+
+        for ans in answers:
+
+            ans_clean = ans.replace('<p>', '').replace('</p>', '').strip()
+
+            html += f'''
+                <li class="mc-quiz-answer--answer" onclick="selectAnswer(this, '{text_gabarito_clean.replace("'", "\\'")}')">
+                    {ans}
+                </li>
             '''
-        html_content += '''
-            </ul>
-        </div>
-        '''
+        html += '</ul></div>'
 
-    html_content += '''
-        <button class="btn" id="submit-btn" onclick="submitQuiz()" disabled>Finalizar Quiz</button>
-        <button class="btn" id="download-btn" onclick="downloadAnswerKey()" disabled>Baixar Gabarito</button>
-    </div>
-    <script>
-        let selectedAnswers = {};
-        let correctAnswers = {}; 
-        const totalQuestions = ''' + str(len(questions)) + ''';
+    html += '''</div>
+<script>
+    function selectAnswer(element, correctText) {
+        const parent = element.parentElement;
+        const items = parent.querySelectorAll('.mc-quiz-answer--answer');
 
-        function selectAnswer(element, questionId, answerText) {
-            const parent = element.parentElement;
-            const items = parent.getElementsByTagName("li");
-            for (let i = 0; i < items.length; i++) {
-                items[i].classList.remove("selected", "correct", "incorrect");
-            }
-            element.classList.add("selected");
-            selectedAnswers[questionId] = answerText;
-            checkAllAnswered();
-        }
+        // Remove seleções anteriores e feedbacks existentes para evitar duplicação
+        items.forEach(item => {
+            item.classList.remove('mc-quiz-answer--correct', 'mc-quiz-answer--incorrect');
+            const feedback = item.querySelector('.mc-quiz-answer--checked-feedback--nSDoi');
+            if (feedback) feedback.remove();
+        });
 
-        function checkAllAnswered() {
-            const submitBtn = document.getElementById("submit-btn");
-            if (Object.keys(selectedAnswers).length === totalQuestions) {
-                submitBtn.disabled = false;
-            } else {
-                submitBtn.disabled = true;
-            }
-        }
+        // Marca a escolha do usuário
+        const userChoice = element.innerText.trim();
+        const isCorrect = userChoice === correctText.trim();
 
-        function submitQuiz() {
-            let total = 0;
-            let correctCount = 0;
-            correctAnswers = {
-            '''
-
-    correct_answers_js = ""
-    for question in questions:
-        safe_correct = question["correct"].replace("'", "\\'")
-        correct_answers_js += f"'{question['id']}': '{safe_correct}',\n"
-
-    html_content += correct_answers_js
-    html_content += '''
-            };
-
-            for (const questionId in correctAnswers) {
-                total++;
-                const correctAnswer = correctAnswers[questionId].trim();
-                const questionDiv = document.getElementById("question-" + questionId);
-                const options = questionDiv.getElementsByTagName("li");
-                const userAnswer = (selectedAnswers[questionId] || "").trim();
-
-                for (let i = 0; i < options.length; i++) {
-                    const optionText = options[i].innerText.trim();
-                    if (optionText === correctAnswer) {
-                        options[i].classList.add("correct");
-                    }
-                    if (optionText === userAnswer && userAnswer !== correctAnswer) {
-                        options[i].classList.add("incorrect");
-                    }
+        if (isCorrect) {
+            element.classList.add('mc-quiz-answer--correct');
+            addFeedback(element);
+        } else {
+            element.classList.add('mc-quiz-answer--incorrect');
+            // Destaca a correta e adiciona o feedback nela
+            items.forEach(item => {
+                if (item.innerText.trim() === correctText.trim()) {
+                    item.classList.add('mc-quiz-answer--correct');
+                    addFeedback(item);
                 }
-                if (userAnswer === correctAnswer) {
-                    correctCount++;
-                }
-            }
-
-            let percentCorrect = ((correctCount / total) * 100).toFixed(2);
-            let percentIncorrect = (100 - percentCorrect).toFixed(2);
-            alert("Você acertou " + correctCount + " de " + total + " perguntas.\\n" +
-                  "Acertou: " + percentCorrect + "%\\n" +
-                  "Errou: " + percentIncorrect + "%");
-            document.getElementById("download-btn").disabled = false;
+            });
         }
+    }
 
-        function downloadAnswerKey() {
-            let answerKeyHTML = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Gabarito</title>';
-            answerKeyHTML += '<style>body { font-family: Arial, sans-serif; background-color: #eef2f5; padding: 20px; }';
-            answerKeyHTML += 'h2 { color: #2c3e50; } ul { list-style: none; padding: 0; } li { padding: 10px; margin-bottom: 8px; background: #fff; border: 1px solid #ddd; border-radius: 4px; }</style>';
-            answerKeyHTML += '</head><body><h2>Gabarito</h2><ul>';
+    function addFeedback(element) {
+        // Cria a div de feedback com o HTML que você forneceu
+        const feedbackHTML = `
+            <div class="mc-quiz-answer--checked-feedback--nSDoi mc-quiz-answer--positive--8eUCV">
+                <p class="ud-text-xs"><strong>Correto</strong></p>
+                <svg aria-label="false" role="img" focusable="false" class="ud-icon ud-icon-medium ud-icon-color-positive" style="width:24px; height:24px;">
+                    <use xlink:href="#icon-success">✅</use>
+                </svg>
+            </div>`;
 
-            for (const questionId in correctAnswers) {
-                answerKeyHTML += '<li>Question ' + questionId + ': <strong>' + correctAnswers[questionId] + '</strong></li>';
-            }
-            answerKeyHTML += '</ul></body></html>';
-            const blob = new Blob([answerKeyHTML], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'gabarito.html';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-    </script>
+        // Adiciona ao final da div interna do item clicado
+        const inner = element.querySelector('.mc-quiz-answer--answer-inner--Uz9E8') || element;
+        inner.insertAdjacentHTML('beforeend', feedbackHTML);
+    }
+</script>
 </body>
-</html>
-'''
-    return html_content
-
+</html>'''
+    return html
 
 def download_captions(captions: list, details_lecture, path_save):
     """Salva todas as legendas e retorna uma lista com seus caminhos.
@@ -453,7 +393,7 @@ def download_captions(captions: list, details_lecture, path_save):
             try:
                 caption_obj = details_lecture.get_captions.get_lang(locale_id)
                 if not caption_obj:
-                    # Se não houver legenda para este idioma, encerra as tentativas
+
                     break
                 filename = f'{caption_obj.locale}.srt'
                 file_path = os.path.join(path_save, filename)
@@ -463,7 +403,7 @@ def download_captions(captions: list, details_lecture, path_save):
                 success = True
             except Exception as e:
                 attempts += 1
-                # Aguarda 1 segundo antes de tentar novamente
+
                 time.sleep(1)
-        # Se não conseguir baixar após 5 tentativas, simplesmente passa para a próxima legenda
+
     return files_paths

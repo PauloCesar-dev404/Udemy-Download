@@ -1,96 +1,188 @@
 import sys
-import time
-import threading
 
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except AttributeError:
+        pass
+    import os
+    os.system('color')
+
+class Style:
+    RESET_ALL = "\033[0m"
+
+class Fore:
+    GREEN = "\033[38;2;28;157;80m"
+    BLUE = "\033[38;2;86;36;208m"
+    CYAN = "\033[38;2;41;180;248m"
+    RED = "\033[38;2;179;45;15m"
+    YELLOW = "\033[38;2;244;193;80m"
+    MAGENTA = "\033[38;2;86;36;208m"
+    WHITE = "\033[38;2;255;255;255m"
+    BLACK = "\033[38;2;28;29;31m"
+    LIGHTBLACK_EX = "\033[38;2;106;111;115m"
+    LIGHTYELLOW_EX = "\033[38;2;244;193;80m"
+    LIGHTMAGENTA_EX = "\033[38;2;164;53;240m"
+    LIGHTWHITE_EX = "\033[38;2;247;249;250m"
+    LIGHTRED_EX = "\033[38;2;236;82;82m"
+    LIGHTCYAN_EX = "\033[38;2;41;180;248m"
+    LIGHTBLUE_EX = "\033[38;2;86;36;208m"
+    INFO = "\033[38;2;164;53;240m"
+    SUCCESS = "\033[38;2;28;157;80m"
+    WARNING = "\033[38;2;244;193;80m"
+    ERROR = "\033[38;2;236;82;82m"
 
 class Cursor:
-    HIDE = "\u001b[?25l"  # Esconde o cursor
-    SHOW = "\u001b[?25h"  # Mostra o cursor
-    MOVE_UP = "\u001b[{n}A"  # Move o cursor para cima n linhas
-    MOVE_DOWN = "\u001b[{n}B"  # Move o cursor para baixo n linhas
-    MOVE_RIGHT = "\u001b[{n}C"  # Move o cursor para a direita n colunas
-    MOVE_LEFT = "\u001b[{n}D"  # Move o cursor para a esquerda n colunas
-    MOVE_TO = "\u001b[{x};{y}H"  # Move o cursor para a posição (x, y)
-
-    @staticmethod
-    def move_to(x: int, y: int) -> str:
-        """Retorna a sequência para mover o cursor para (x, y)."""
-        return f"\u001b[{x};{y}H"
-
+    HIDE = "\033[?25l"
+    SHOW = "\033[?25h"
 
 class Colors:
-    ERROR = "\u001b[31m"  # Vermelho
-    WARNING = "\u001b[33m"  # Amarelo
-    SUCCESS = "\u001b[32m"  # Verde
-    INFO = "\u001b[34m"  # Azul
-    RESET = "\u001b[0m"  # Resetar cor para padrão
-    GRAY = "\u001b[90m"  # Cinza
-
+    ERROR = "\033[38;2;236;82;82m"
+    WARNING = "\033[38;2;244;193;80m"
+    SUCCESS = "\033[38;2;28;157;80m"
+    INFO = "\033[38;2;164;53;240m"
+    RESET = "\033[0m"
+    GRAY = "\033[38;2;106;111;115m"
 
 class AnimationConsole:
-    def __init__(self, text="Loading", color: str = Colors.GRAY, animation_type='circle',
+    def __init__(self, text="Loading", color: str = Colors.GRAY, animation_type='material',
                  color_frame: str = Colors.INFO):
         """
-        Cria uma animação de loading com uma mensagem colorida no console.
-        :param text: Texto inicial da mensagem de loading.
-        :param color: Cor do texto, usando Fore do colorama.
-        :param animation_type: Tipo de animação ('spinner' ou 'circle').
+        Animação de loading em thread usando print nativo e ANSI puro.
         """
         self._text = text
         self._color = color
         self._color_frame = color_frame
-        self._animation_type = animation_type
         self._running = False
-        self._animation_thread = None
+        self._thread = None
 
         if animation_type == 'spinner':
-            self._frames = ["-", "\\", "|", "/"]
-        elif animation_type == 'circle':
-            self._frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
-
+            self._frames = ['-', '\\', '|', '/']
         else:
-            raise ValueError("Tipo de animação desconhecido. Use 'spinner' ou 'circle'.")
 
-        self._index = 0
+            self._frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
 
-    def start(self):
-        """
-        Inicia a animação no console.
-        """
-        if self._running:
-            return  # Previne múltiplas execuções
-        self._running = True
-        self._animation_thread = threading.Thread(target=self._animate, daemon=True)
-        self._animation_thread.start()
+    def _animate(self):
+        sys.stdout.write(Cursor.HIDE)
+        for frame in itertools.cycle(self._frames):
+            if not self._running:
+                break
 
-    def stop(self):
-        """
-        Para a animação no console.
-        """
-        self._running = False
-        if self._animation_thread:
-            self._animation_thread.join()
-        sys.stdout.write("\r" + " " * (len(self._text) + 20) + "\r")  # Limpa a linha
+            output = f"\r{self._color_frame}{frame} {self._color}{self._text}{Style.RESET_ALL} "
+            print(output, end="", flush=True)
+            time.sleep(0.08)
+
+        sys.stdout.write(f"\r\033[K")
+        sys.stdout.write(Cursor.SHOW)
         sys.stdout.flush()
 
+    def start(self):
+        self._running = True
+        self._thread = threading.Thread(target=self._animate, daemon=True)
+        self._thread.start()
+
+    def stop(self):
+        self._running = False
+        if self._thread:
+            self._thread.join()
+
     def update_message(self, new_text, new_color=None):
-        """
-        Atualiza a mensagem exibida junto à animação.
-        :param new_text: Novo texto a ser exibido.
-        :param new_color: Nova cor para o texto (opcional).
-        """
         self._text = new_text
         if new_color:
             self._color = new_color
 
+
+import time
+import threading
+import itertools
+
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except AttributeError:
+        pass
+    import os
+    os.system('color')
+
+class Style:
+    RESET_ALL = "\033[0m"
+
+class Fore:
+    GREEN = "\033[38;2;28;157;80m"
+    BLUE = "\033[38;2;86;36;208m"
+    CYAN = "\033[38;2;41;180;248m"
+    RED = "\033[38;2;179;45;15m"
+    YELLOW = "\033[38;2;244;193;80m"
+    MAGENTA = "\033[38;2;86;36;208m"
+    WHITE = "\033[38;2;255;255;255m"
+    BLACK = "\033[38;2;28;29;31m"
+    LIGHTBLACK_EX = "\033[38;2;106;111;115m"
+    LIGHTYELLOW_EX = "\033[38;2;244;193;80m"
+    LIGHTMAGENTA_EX = "\033[38;2;164;53;240m"
+    LIGHTWHITE_EX = "\033[38;2;247;249;250m"
+    LIGHTRED_EX = "\033[38;2;236;82;82m"
+    LIGHTCYAN_EX = "\033[38;2;41;180;248m"
+    LIGHTBLUE_EX = "\033[38;2;86;36;208m"
+    INFO = "\033[38;2;164;53;240m"
+    SUCCESS = "\033[38;2;28;157;80m"
+    WARNING = "\033[38;2;244;193;80m"
+    ERROR = "\033[38;2;236;82;82m"
+
+class Cursor:
+    HIDE = "\033[?25l"
+    SHOW = "\033[?25h"
+
+class Colors:
+    ERROR = "\033[38;2;236;82;82m"
+    WARNING = "\033[38;2;244;193;80m"
+    SUCCESS = "\033[38;2;28;157;80m"
+    INFO = "\033[38;2;164;53;240m"
+    RESET = "\033[0m"
+    GRAY = "\033[38;2;106;111;115m"
+
+class AnimationConsole:
+    def __init__(self, text="Loading", color: str = Colors.GRAY, animation_type='material',
+                 color_frame: str = Colors.INFO):
+        """
+        Animação de loading em thread usando print nativo e ANSI puro.
+        """
+        self._text = text
+        self._color = color
+        self._color_frame = color_frame
+        self._running = False
+        self._thread = None
+
+        if animation_type == 'spinner':
+            self._frames = ['-', '\\', '|', '/']
+        else:
+
+            self._frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
+
     def _animate(self):
-        """
-        Animação interna do console.
-        """
-        while self._running:
-            frame = self._frames[self._index]
-            self._index = (self._index + 1) % len(self._frames)
-            sys.stdout.write(
-                f"\r{self._color}{self._text}{Colors.RESET} {self._color_frame}{frame}{Colors.RESET}{Cursor.HIDE}")
-            sys.stdout.flush()
-            time.sleep(0.1)
+        sys.stdout.write(Cursor.HIDE)
+        for frame in itertools.cycle(self._frames):
+            if not self._running:
+                break
+
+            output = f"\r{self._color_frame}{frame} {self._color}{self._text}{Style.RESET_ALL} "
+            print(output, end="", flush=True)
+            time.sleep(0.08)
+
+        sys.stdout.write(f"\r\033[K")
+        sys.stdout.write(Cursor.SHOW)
+        sys.stdout.flush()
+
+    def start(self):
+        self._running = True
+        self._thread = threading.Thread(target=self._animate, daemon=True)
+        self._thread.start()
+
+    def stop(self):
+        self._running = False
+        if self._thread:
+            self._thread.join()
+
+    def update_message(self, new_text, new_color=None):
+        self._text = new_text
+        if new_color:
+            self._color = new_color
